@@ -4,4 +4,34 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = ["requests"]
+
+[dependency-groups]
+dev = [
+  'pytest',
+  'pytest-sugar',
+  'pyrefly',
+  'requests-mock',
+  'ruff',
+]
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["mydata", "tests"]
+
+[tool.pyrefly]
+project_includes = ["mydata", "tests"]
+python_interpreter = ".venv/bin/python"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

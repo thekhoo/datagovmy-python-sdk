@@ -12,17 +12,40 @@ Unofficial Python SDK for accessing open data from Malaysia's [data.gov.my](http
 
 Base URL: `https://api.data.gov.my`
 
+## Always do this
+
+- When implementing a feature, always come up with a plan before making any code changes
+- If requirements are not clear, always ask for clarity - never assume
+- Always use TDD to implement new features
+- After writing executable code, run the unit tests and linters and ensure all of them pass
+- Always commit in small chunks. Unit tests and linters must pass before committing
+- Be clear and concise with your code. I fthere are hidden implications, leave comments explaining why
+- Make sure logs are written at difference code checkpoints. Do not be too verbose
+- Use existing utility functions instead of re-implementing. Helper functions should be reusable in an appropriately named module
+
+## Never do this
+
+- Change main code when there are no unit tests that capture the functionality. add unit tests before making any changes
+- Do not hardcode secrets or ARNs within the code. Any secrets should be taken from SSM
+- Do not expose any tenanted information within the log messages
+
+## Coding Conventions
+
+### Environment
+
+- All environment variable access should be done using helper functions in mydata/service/environment.py and not os.environ directly in the code.
+
 ### Endpoints
 
-| Endpoint | Returns | Description |
-|---|---|---|
-| `GET /data-catalogue?id=<id>` | JSON | National data catalogue datasets |
-| `GET /opendosm?id=<id>` | JSON | Dept of Statistics (DOSM) datasets |
-| `GET /weather/forecast` | JSON | 7-day weather forecast |
-| `GET /weather/warning` | JSON | Weather warnings |
-| `GET /weather/warning/earthquake` | JSON | Earthquake warnings |
-| `GET /gtfs-static/<agency>` | ZIP | GTFS static feeds (ktmb, prasarana, mybas-*) |
-| `GET /gtfs-realtime/vehicle-position/<agency>` | Protobuf | Real-time vehicle positions |
+| Endpoint                                       | Returns  | Description                                   |
+| ---------------------------------------------- | -------- | --------------------------------------------- |
+| `GET /data-catalogue?id=<id>`                  | JSON     | National data catalogue datasets              |
+| `GET /opendosm?id=<id>`                        | JSON     | Dept of Statistics (DOSM) datasets            |
+| `GET /weather/forecast`                        | JSON     | 7-day weather forecast                        |
+| `GET /weather/warning`                         | JSON     | Weather warnings                              |
+| `GET /weather/warning/earthquake`              | JSON     | Earthquake warnings                           |
+| `GET /gtfs-static/<agency>`                    | ZIP      | GTFS static feeds (ktmb, prasarana, mybas-\*) |
+| `GET /gtfs-realtime/vehicle-position/<agency>` | Protobuf | Real-time vehicle positions                   |
 
 ### Authentication
 
@@ -31,18 +54,18 @@ Base URL: `https://api.data.gov.my`
 
 ### Query Parameters (JSON endpoints)
 
-| Param | Usage |
-|---|---|
-| `id` | Dataset identifier (required for data-catalogue/opendosm) |
-| `limit` | Max records to return |
-| `filter` / `ifilter` | Exact match (case-sensitive / insensitive): `value@column` |
-| `contains` / `icontains` | Partial match: `value@column` |
-| `range` | Numeric range: `column[begin:end]` |
-| `sort` | Sort: `column,-column2` (dash = descending) |
-| `include` / `exclude` | Select/omit columns |
-| `date_start` / `date_end` | Date filter (`YYYY-MM-DD`) |
-| `timestamp_start` / `timestamp_end` | Timestamp filter (`YYYY-MM-DD HH:MM:SS`) |
-| `meta=true` | Include metadata wrapper in response |
+| Param                               | Usage                                                      |
+| ----------------------------------- | ---------------------------------------------------------- |
+| `id`                                | Dataset identifier (required for data-catalogue/opendosm)  |
+| `limit`                             | Max records to return                                      |
+| `filter` / `ifilter`                | Exact match (case-sensitive / insensitive): `value@column` |
+| `contains` / `icontains`            | Partial match: `value@column`                              |
+| `range`                             | Numeric range: `column[begin:end]`                         |
+| `sort`                              | Sort: `column,-column2` (dash = descending)                |
+| `include` / `exclude`               | Select/omit columns                                        |
+| `date_start` / `date_end`           | Date filter (`YYYY-MM-DD`)                                 |
+| `timestamp_start` / `timestamp_end` | Timestamp filter (`YYYY-MM-DD HH:MM:SS`)                   |
+| `meta=true`                         | Include metadata wrapper in response                       |
 
 Multiple filters: comma-separated. Nested fields: double underscores (e.g. `location__location_name`).
 
