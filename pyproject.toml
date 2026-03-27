@@ -26,10 +26,10 @@ select = ["E", "F", "I", "W"]
 ignore = []
 
 [tool.ruff.lint.isort]
-known-first-party = ["mydata", "tests"]
+known-first-party = ["datagovmy", "tests"]
 
 [tool.pyrefly]
-project_includes = ["mydata", "tests"]
+project_includes = ["datagovmy", "tests"]
 python_interpreter = ".venv/bin/python"
 
 [tool.pytest.ini_options]
