@@ -3,7 +3,7 @@ import requests
 import requests_mock
 from urllib3.util.retry import Retry
 
-from mydata.core.api import BaseAPIClient
+from datagovmy.core.api import BaseAPIClient
 
 BASE_URL = "https://api.example.com"
 
