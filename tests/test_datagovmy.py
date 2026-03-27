@@ -2,7 +2,6 @@ from datagovmy import DataGovMyClient
 from datagovmy.service.data_catalogue import DataCatalogueClient
 from datagovmy.service.open_dosm import OpenDOSMClient
 
-
 # --- Property access ---
 
 
