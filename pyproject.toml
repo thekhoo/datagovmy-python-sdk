@@ -8,6 +8,7 @@ dependencies = ["requests"]
 
 [dependency-groups]
 dev = [
+  'build',
   'pytest',
   'pytest-sugar',
   'pyrefly',
@@ -15,8 +16,8 @@ dev = [
   'ruff',
 ]
 
-[tool.setuptools.packages.find]
-exclude = ["tests"]
+[tool.hatch.build.targets.wheel]
+packages = ["datagovmy"]
 
 [tool.ruff]
 line-length = 120
@@ -35,3 +36,36 @@ python_interpreter = ".venv/bin/python"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# -------------------------------------------------------
+# Semantic Release configuration
+# -------------------------------------------------------
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+commit_parser = "conventional"
+build_command = "pip install build && python -m build"
+major_on_zero = false
+tag_format = "v{version}"
+
+[tool.semantic_release.commit_message]
+# The commit message for the version bump — [skip ci] prevents
+# the release workflow from re-triggering on its own commit
+message = "chore(release): v{version} [skip ci]"
+
+[tool.semantic_release.changelog]
+enabled = true
+
+[tool.semantic_release.changelog.default_templates]
+changelog_file = "CHANGELOG.md"
+
+[tool.semantic_release.remote]
+type = "github"
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
