@@ -16,23 +16,24 @@ from datagovmy import DataGovMyClient
 client = DataGovMyClient()
 
 # Fetch a dataset from the national data catalogue
-data = client.data_catalogue.get_dataset_as_json(id="population_malaysia")
+data = client.data_catalogue.get_dataset("population_malaysia")
 
 # Fetch with filters
-data = client.data_catalogue.get_dataset_as_json(
-    id="population_malaysia",
+data = client.data_catalogue.get_dataset(
+    "population_malaysia",
     filter="Selangor@location",
     sort="-year",
-    limit=10
+    limit=10,
 )
 
 # Fetch DOSM data
-data = client.opendosm.get_dataset_as_json(id="cpi_2d_category")
+data = client.opendosm.get_dataset("cpi_2d_category")
 ```
 
 ## Documentation
 
-For detailed usage examples including all supported query filters (filtering, sorting, pagination, date ranges, column selection, and more), see the [Usage Guide](docs/usage.md).
+- [Usage Guide](docs/usage.md) — query filters, sorting, pagination, date ranges, column selection, and more
+- [Error Handling](docs/errors.md) — SDK exceptions and how to handle them
 
 ## API Reference
 
@@ -45,6 +46,8 @@ This SDK wraps the [data.gov.my Open API](https://developer.data.gov.my/). Datas
 
 - Without API key: **4 requests/minute**
 - With API key: **10 requests/minute**
+
+The SDK automatically retries on rate limit errors (HTTP 429) with exponential backoff (up to 3 retries).
 
 ```python
 client = DataGovMyClient(api_key="your-api-key")
