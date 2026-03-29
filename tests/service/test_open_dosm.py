@@ -1,4 +1,5 @@
 import requests_mock
+from requests.adapters import HTTPAdapter
 
 from datagovmy.service.open_dosm import OpenDOSMClient
 
@@ -36,5 +37,6 @@ def test_opendosm_explicit_params():
 def test_opendosm_default_retry():
     client = OpenDOSMClient()
     adapter = client.session.get_adapter("https://api.data.gov.my")
+    assert isinstance(adapter, HTTPAdapter)
     assert adapter.max_retries.total == 3
     assert 429 in adapter.max_retries.status_forcelist

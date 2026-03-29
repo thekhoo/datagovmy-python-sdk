@@ -1,5 +1,6 @@
 import pytest
 import requests_mock
+from requests.adapters import HTTPAdapter
 
 from datagovmy.service.data_catalogue import DataCatalogueClient
 
@@ -58,6 +59,7 @@ def test_special_characters_in_filter_are_encoded(client):
 
 def test_default_retry_strategy_configured(client):
     adapter = client.session.get_adapter("https://api.data.gov.my")
+    assert isinstance(adapter, HTTPAdapter)
     assert adapter.max_retries.total == 3
     assert 429 in adapter.max_retries.status_forcelist
 
@@ -68,6 +70,7 @@ def test_custom_retry_strategy_overrides_default():
     custom = Retry(total=1, status_forcelist=[500])
     client = DataCatalogueClient(retry_strategy=custom)
     adapter = client.session.get_adapter("https://api.data.gov.my")
+    assert isinstance(adapter, HTTPAdapter)
     assert adapter.max_retries.total == 1
 
 

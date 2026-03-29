@@ -1,5 +1,6 @@
 import pytest
 import requests_mock
+from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from datagovmy.core.api import BaseAPIClient
@@ -104,6 +105,7 @@ def test_per_request_headers(client):
 def test_retry_strategy_mounted_on_session(retry_client):
     """Verify the retry strategy is properly configured on the session adapters."""
     https_adapter = retry_client.session.get_adapter("https://example.com")
+    assert isinstance(https_adapter, HTTPAdapter)
     assert https_adapter.max_retries.total == 2
     assert 429 in https_adapter.max_retries.status_forcelist
     assert 500 in https_adapter.max_retries.status_forcelist
