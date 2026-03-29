@@ -5,6 +5,13 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from datagovmy.exceptions import (
+    APIError,
+    AuthenticationError,
+    NotFoundError,
+    RateLimitError,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -40,7 +47,21 @@ class BaseAPIClient:
         url = self._build_url(path)
         logger.debug("Requesting %s %s", method, url)
         response = self.session.request(method, url, **kwargs)
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as exc:
+            status = response.status_code
+            if status == 429:
+                raise RateLimitError(response=response) from exc
+            if status == 404:
+                raise NotFoundError(response=response) from exc
+            if status in (401, 403):
+                raise AuthenticationError(
+                    message=f"Authentication failed (HTTP {status})",
+                    status_code=status,
+                    response=response,
+                ) from exc
+            raise APIError(f"API error (HTTP {status})", status_code=status, response=response) from exc
         return response
 
     def get(
