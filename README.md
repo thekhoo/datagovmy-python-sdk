@@ -5,7 +5,7 @@ Unofficial SDK for accessing open source data on https://data.gov.my.
 ## Installation
 
 ```bash
-pip install mydata
+pip install datagovmy-python-sdk
 ```
 
 ## Quick Start
