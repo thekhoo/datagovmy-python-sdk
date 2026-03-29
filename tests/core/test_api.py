@@ -4,7 +4,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from datagovmy.core.api import BaseAPIClient
-from datagovmy.service.exceptions import (
+from datagovmy.exceptions import (
     APIError,
     AuthenticationError,
     DataGovMyError,

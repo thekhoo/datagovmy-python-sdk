@@ -5,7 +5,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from datagovmy.service.exceptions import (
+from datagovmy.exceptions import (
     APIError,
     AuthenticationError,
     NotFoundError,

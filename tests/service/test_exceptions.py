@@ -1,4 +1,4 @@
-from datagovmy.service.exceptions import (
+from datagovmy.exceptions import (
     APIError,
     AuthenticationError,
     DataGovMyError,
