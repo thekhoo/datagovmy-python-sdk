@@ -17,6 +17,7 @@ Base URL: `https://api.data.gov.my`
 - When implementing a feature, always come up with a plan before making any code changes
 - If requirements are not clear, always ask for clarity - never assume
 - Always use TDD to implement new features
+- After implementing features, trigger the sdk-dx-reviewer and security-code-reviewer agents to ensure DX remains good and no vulnaribilities are introduced
 - After writing executable code, run the unit tests and linters and ensure all of them pass
 - Always commit in small chunks. Unit tests and linters must pass before committing
 - Be clear and concise with your code. I fthere are hidden implications, leave comments explaining why

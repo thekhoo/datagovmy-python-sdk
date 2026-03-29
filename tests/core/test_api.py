@@ -1,9 +1,15 @@
 import pytest
-import requests
 import requests_mock
 from urllib3.util.retry import Retry
 
 from datagovmy.core.api import BaseAPIClient
+from datagovmy.service.exceptions import (
+    APIError,
+    AuthenticationError,
+    DataGovMyError,
+    NotFoundError,
+    RateLimitError,
+)
 
 BASE_URL = "https://api.example.com"
 
@@ -109,11 +115,52 @@ def test_no_retry_strategy_by_default(client):
     assert adapter.max_retries.total == 0
 
 
-# --- Error handling ---
+# --- Error handling (SDK exceptions) ---
 
 
-def test_raises_on_error_status(client):
+def test_raises_api_error_on_generic_error(client):
+    with requests_mock.Mocker() as m:
+        m.get(f"{BASE_URL}/items", status_code=500)
+        with pytest.raises(APIError) as exc_info:
+            client.get("/items")
+    assert exc_info.value.status_code == 500
+
+
+def test_raises_rate_limit_error_on_429(client):
+    with requests_mock.Mocker() as m:
+        m.get(f"{BASE_URL}/items", status_code=429)
+        with pytest.raises(RateLimitError) as exc_info:
+            client.get("/items")
+    assert exc_info.value.status_code == 429
+
+
+def test_raises_not_found_error_on_404(client):
+    with requests_mock.Mocker() as m:
+        m.get(f"{BASE_URL}/items", status_code=404)
+        with pytest.raises(NotFoundError) as exc_info:
+            client.get("/items")
+    assert exc_info.value.status_code == 404
+
+
+def test_raises_authentication_error_on_401(client):
+    with requests_mock.Mocker() as m:
+        m.get(f"{BASE_URL}/items", status_code=401)
+        with pytest.raises(AuthenticationError) as exc_info:
+            client.get("/items")
+    assert exc_info.value.status_code == 401
+
+
+def test_raises_authentication_error_on_403(client):
     with requests_mock.Mocker() as m:
         m.get(f"{BASE_URL}/items", status_code=403)
-        with pytest.raises(requests.exceptions.HTTPError):
+        with pytest.raises(AuthenticationError) as exc_info:
+            client.get("/items")
+    assert exc_info.value.status_code == 403
+
+
+def test_sdk_errors_are_catchable_as_base_error(client):
+    """All SDK errors can be caught via DataGovMyError."""
+    with requests_mock.Mocker() as m:
+        m.get(f"{BASE_URL}/items", status_code=500)
+        with pytest.raises(DataGovMyError):
             client.get("/items")
